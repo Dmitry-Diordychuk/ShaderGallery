@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Zoom
-  m_Shader: {fileID: 4800000, guid: 7ccddd40eef95a54d832d93ec30f8b6e, type: 3}
+  m_Name: Clamp
+  m_Shader: {fileID: 4800000, guid: af9eacd1a25ce3f4ba5f50cb2f0265df, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
@@ -58,7 +58,9 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _Avalue: 0.273
     - _BumpScale: 1
+    - _Bvalue: 0.785
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
@@ -73,10 +75,9 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _UVSec: 0
+    - _Xvalue: 1
     - _ZWrite: 1
-    - _Zoom: 0.877
     m_Colors:
-    - _Center: {r: 0.5, g: 0.5, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []
