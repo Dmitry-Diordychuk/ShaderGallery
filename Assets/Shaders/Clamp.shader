@@ -10,6 +10,7 @@ Shader "Unlit/Clamp"
     SubShader
     {
         Tags { "RenderType"="Opaque" }
+        Cull off
         LOD 100
 
         Pass

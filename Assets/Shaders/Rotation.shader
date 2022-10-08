@@ -1,10 +1,9 @@
-Shader "Unlit/Zoom"
+Shader "Unlit/Rotation"
 {
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
-        _Zoom ("Zoom", Range(0, 1)) = 0
-        _Center ("Center", Vector) = (0, 0, 0, 0)
+        _Speed ("Rotation Speed", Range(0, 3)) = 1
     }
     SubShader
     {
@@ -37,27 +36,38 @@ Shader "Unlit/Zoom"
 
             sampler2D _MainTex;
             float4 _MainTex_ST;
-            float _Zoom;
-            float2 _Center;
+            float _Speed;
 
+            float3 rotation(float3 vertex)
+            {
+                float c = cos(_Time.y * _Speed);
+                float s = sin(_Time.y * _Speed);
+                
+                float3x3 m = float3x3
+                (
+                    c, 0, s,
+                    0, 1, 0,
+                    -s, 0, c
+                );
+                return mul(m, vertex);
+            }
+            
             v2f vert (appdata v)
             {
                 v2f o;
-                o.vertex = UnityObjectToClipPos(v.vertex);
+
+                float3 rotVertex = rotation(v.vertex);
+                
+                o.vertex = UnityObjectToClipPos(rotVertex);
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
                 UNITY_TRANSFER_FOG(o,o.vertex);
                 return o;
             }
-
+            
             fixed4 frag (v2f i) : SV_Target
             {
-                float u = ceil(i.uv.x) * _Center.x;
-                float v = ceil(i.uv.y) * _Center.y;
-                float uLerp = lerp(u, i.uv.x, _Zoom);
-                float vLerp = lerp(v, i.uv.y, _Zoom);
-                
                 // sample the texture
-                fixed4 col = tex2D(_MainTex, float2(uLerp, vLerp));
+                fixed4 col = tex2D(_MainTex, i.uv);
                 // apply fog
                 UNITY_APPLY_FOG(i.fogCoord, col);
                 return col;
