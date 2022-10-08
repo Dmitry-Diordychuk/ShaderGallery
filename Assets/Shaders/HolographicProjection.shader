@@ -1,14 +1,14 @@
-Shader "Unlit/Rotation"
+Shader "Unlit/HolographicProjection"
 {
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
-        _Speed ("Rotation Speed", Range(0, 3)) = 1
+        _Color ("Color", Color) = (1, 1, 1, 1)
+        _Sections ("Sections", Range(2, 10)) = 10
     }
     SubShader
     {
         Tags { "RenderType"="Opaque" }
-        Cull off
         LOD 100
 
         Pass
@@ -36,38 +36,25 @@ Shader "Unlit/Rotation"
 
             sampler2D _MainTex;
             float4 _MainTex_ST;
-            float _Speed;
+            float4 _Color;
+            float _Sections;
 
-            float3 rotation(float3 vertex)
-            {
-                float c = cos(_Time.y * _Speed);
-                float s = sin(_Time.y * _Speed);
-                
-                float3x3 m = float3x3
-                (   //Y axis  X axis     Z axis
-                    c, 0, s,//1, 0, 0,//c,-s, 0,
-                    0, 1, 0,//0, c,-s,//s, c, 0,
-                    -s, 0, c//0, s, c,//0, 0, a
-                );
-                return mul(m, vertex);
-            }
-            
             v2f vert (appdata v)
             {
                 v2f o;
-
-                float3 rotVertex = rotation(v.vertex);
-                
-                o.vertex = UnityObjectToClipPos(rotVertex);
+                o.vertex = UnityObjectToClipPos(v.vertex);
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
                 UNITY_TRANSFER_FOG(o,o.vertex);
                 return o;
             }
-            
+
             fixed4 frag (v2f i) : SV_Target
             {
+                float4 tanCol = clamp(0, abs(tan((i.uv.y - _Time.x) * _Sections)), 1);
+                tanCol *= _Color;
+                
                 // sample the texture
-                fixed4 col = tex2D(_MainTex, i.uv);
+                fixed4 col = tex2D(_MainTex, i.uv) * tanCol;
                 // apply fog
                 UNITY_APPLY_FOG(i.fogCoord, col);
                 return col;
