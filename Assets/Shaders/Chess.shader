@@ -9,6 +9,7 @@ Shader "Unlit/Chess"
     {
         Tags { "RenderType"="Opaque" }
         LOD 100
+        Cull off
 
         Pass
         {
