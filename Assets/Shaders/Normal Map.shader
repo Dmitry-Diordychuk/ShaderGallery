@@ -55,8 +55,9 @@ Shader "Unlit/NormalMap"
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
 
                 o.uv_normal = TRANSFORM_TEX(v.uv, _NormalMap); // add tilling and offset
-                o.normal_world = normalize(mul(unity_ObjectToWorld, float4(v.normal, 0))).xyz; // Переведем в мировые normal и tangent
-                o.tangent_world = normalize(mul(unity_ObjectToWorld, v.tangent)).xyz;
+                // Переведем в мировые normal и tangent
+                o.normal_world = normalize(mul(unity_ObjectToWorld, float4(v.normal, 0))).xyz; // UnityObjectToWorldNormal()
+                o.tangent_world = normalize(mul(unity_ObjectToWorld, v.tangent)).xyz; // UnityObjectToWorldDir()
                 o.binormal_world = normalize(cross(o.normal_world, o.tangent_world) * v.tangent.w); // Вычислим binormal
                 
                 return o;
